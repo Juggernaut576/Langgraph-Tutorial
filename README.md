@@ -1,147 +1,121 @@
-# Langgraph Tutorial
+# LangGraph Tutorial
 
-A collection of Jupyter notebooks demonstrating LangGraph workflows for building AI applications with Large Language Models (LLMs).
+A collection of Jupyter notebooks that introduce LangGraph through small, runnable examples. The repository includes basic state graphs, branching and parallel workflows, prompt chaining, and LLM-powered applications using Groq.
 
-## Project Structure
+## Contents
 
+| Notebook | What it demonstrates |
+| --- | --- |
+| `0_test_installation.ipynb` | Checks that LangGraph can be imported. |
+| `1_bmi_workflow.ipynb` | Calculates BMI and assigns a weight category through sequential graph nodes. |
+| `2_simple_llm_workflow.ipynb` | Sends a question to a Groq chat model from a LangGraph workflow. |
+| `basic_chatbot.ipynb` | Runs a terminal-style chat loop with message state and in-memory conversation checkpoints. |
+| `batsman_workflow.ipynb` | Calculates cricket batting statistics in parallel and combines them into a summary. |
+| `Quadratic_Equation.ipynb` | Builds an equation, calculates its discriminant, and routes to the appropriate root calculation. |
+| `prompt_chaining.ipynb` | Generates a blog outline and then uses it to write a post. |
+| `LLM_based_review_workflow.ipynb` | Classifies a product review and routes positive or negative reviews to different responses. |
+| `8_X_Postgenerator.ipynb` | Generates, evaluates, and iteratively improves short social-media posts. |
+| `UPSC_essay_workflow.ipynb` | Evaluates an essay on multiple criteria in parallel and aggregates feedback and scores. |
+
+The notebooks are independent examples; run the cells in a notebook from top to bottom. `check_nb_concat.py`, `check_nb_syntax.py`, `debug_graph.py`, and `show_cell.py` are helper scripts, not tutorial entry points.
+
+## Requirements
+
+- Python 3.10 or newer
+- Jupyter Notebook or JupyterLab
+- A Groq API key for the LLM-powered notebooks
+
+There is no pinned dependency file in this repository. Install the packages used by the notebooks with:
+
+```bash
+python -m pip install langgraph langchain-core langchain-groq python-dotenv pydantic httpx jupyter
 ```
-├── 0_test_installation.ipynb     # Verify LangGraph and dependencies are installed
-├── 1_bmi_workflow.ipynb          # Simple BMI calculation workflow
-├── 2_simple_llm_workflow.ipynb   # LLM-based Q&A workflow using state graphs
-├── prompt_chaining.ipynb         # Multi-step prompt chaining (outline → blog post)
-└── README.md                     # This file
-```
-
-## Overview
-
-This tutorial covers:
-- **LangGraph Basics**: Creating state graphs and nodes
-- **LLM Integration**: Connecting to LLM providers (Groq, OpenAI, etc.)
-- **Workflow Design**: Building multi-step AI pipelines
-- **State Management**: Using TypedDict for workflow state
-
-## Prerequisites
-
-- Python 3.8+
-- pip or conda
-- API key for an LLM provider (Groq, OpenAI, etc.)
 
 ## Setup
 
-1. **Clone or download this repository:**
+1. Clone the repository and enter its directory:
+
    ```bash
    git clone https://github.com/Juggernaut576/Langgraph-Tutorial.git
    cd Langgraph-Tutorial
    ```
 
-2. **Create a virtual environment (optional but recommended):**
-   ```bash
-   python -m venv venv
-   # On Windows:
-   venv\Scripts\activate
-   # On macOS/Linux:
-   source venv/bin/activate
+2. (Recommended) Create and activate a virtual environment:
+
+   **Windows PowerShell**
+
+   ```powershell
+   py -m venv .venv
+   .\.venv\Scripts\Activate.ps1
    ```
 
-3. **Install dependencies:**
+   **macOS or Linux**
+
    ```bash
-   pip install langgraph langchain langchain-groq python-dotenv jupyter
+   python3 -m venv .venv
+   source .venv/bin/activate
    ```
 
-4. **Set up environment variables:**
-   - Create a `.env` file in the project root (do NOT commit this):
-     ```
-     GROQ_API_KEY=your_groq_api_key_here
-     GROQ_MODEL=groq-1
-     ```
-   - Or export in your terminal (PowerShell example):
-     ```powershell
-     $env:GROQ_API_KEY="your_groq_api_key_here"
-     ```
+3. Install the dependencies:
 
-5. **Start Jupyter:**
    ```bash
-   jupyter notebook
-   # or
+   python -m pip install langgraph langchain-core langchain-groq python-dotenv pydantic httpx jupyter
+   ```
+
+4. Configure Groq credentials. Create a file named `.env` in the repository root:
+
+   ```dotenv
+   GROQ_API_KEY=your_groq_api_key
+   ```
+
+   `GROQ_MODEL` is optional and is used by `UPSC_essay_workflow.ipynb`; its default is `openai/gpt-oss-20b`. Other notebooks specify their model in the notebook code. Keep real API keys private; `.env` is ignored by Git.
+
+   Alternatively, set the key in the current terminal session:
+
+   **Windows PowerShell**
+
+   ```powershell
+   $env:GROQ_API_KEY = "your_groq_api_key"
+   ```
+
+   **macOS or Linux**
+
+   ```bash
+   export GROQ_API_KEY="your_groq_api_key"
+   ```
+
+5. Start Jupyter from the repository root so the notebooks can find `.env`:
+
+   ```bash
    jupyter lab
    ```
 
-## Notebooks
+   You can also use `jupyter notebook`. Open a notebook and run its cells in order.
 
-### 0_test_installation.ipynb
-Verifies that LangGraph and required dependencies are correctly installed.
+## Notebook notes
 
-### 1_bmi_workflow.ipynb
-Demonstrates a simple workflow for calculating BMI using LangGraph state graphs.
-
-### 2_simple_llm_workflow.ipynb
-Builds a Q&A workflow that:
-- Accepts a question from state
-- Calls an LLM (Groq) to generate an answer
-- Returns the answer in the updated state
-
-**Usage:**
-```python
-initial_state = LLMState(question="What is the capital of France?")
-final_state = workflow.invoke(initial_state)
-print(final_state)
-```
-
-### prompt_chaining.ipynb
-Demonstrates prompt chaining with multiple nodes:
-1. **Create_outline**: Generates an outline from a blog title
-2. **Create_blog_post**: Generates a full blog post using the outline
-
-**Usage:**
-```python
-initial_state = BlogState(title="Your Blog Topic")
-final_state = workflow.invoke(initial_state)
-```
-
-## Configuration
-
-To use a different LLM provider:
-- **Groq**: Already integrated (set `GROQ_API_KEY`)
-- **OpenAI**: Replace imports with `from langchain_openai import ChatOpenAI`
-- **Gemini**: Use `from langchain_google_vertexai import ChatVertexAI`
-
-## Important Security Notes
-
-⚠️ **Never commit API keys to version control!**
-- Use `.env` files (included in `.gitignore`)
-- Use environment variables
-- GitHub push protection will block secret detection
+- The examples in `0_test_installation.ipynb`, `1_bmi_workflow.ipynb`, `batsman_workflow.ipynb`, and `Quadratic_Equation.ipynb` do not call an LLM and do not need a Groq key.
+- The LLM examples need a valid Groq API key, internet access, and model IDs that are available to your Groq account. Models are selected in the notebook cells; update those IDs if a provider retires or changes a model.
+- `basic_chatbot.ipynb` reads `.env` from the repository root and uses an in-memory checkpointer. Its conversation is not saved after the kernel stops. The interactive cell accepts `exit`, `quit`, or `bye` to end the loop.
+- `8_X_Postgenerator.ipynb` uses structured output for tweet evaluation and loops through improvement attempts up to its configured iteration limit.
+- `UPSC_essay_workflow.ipynb` also reads `GROQ_MODEL` from the environment if set; otherwise it selects its default model.
 
 ## Troubleshooting
 
-**ImportError: No module named 'langgraph'**
-```bash
-pip install langgraph
-```
+**`ModuleNotFoundError` for LangGraph, LangChain, or Jupyter**
 
-**API Key not found**
-Ensure your `.env` file is in the project root and contains:
-```
-GROQ_API_KEY=your_key_here
-```
+Install the missing package in the same Python environment selected as the notebook kernel. If needed, select the virtual environment created during setup as the Jupyter kernel.
 
-**Jupyter not found**
-```bash
-pip install jupyter
-```
+**Groq reports that an API key is missing**
 
-## Resources
+Confirm that `.env` is in the repository root, that it contains `GROQ_API_KEY=...`, and that Jupyter was started from that directory. You can also set `GROQ_API_KEY` in the environment before starting Jupyter.
 
-- [LangGraph Documentation](https://langchain-ai.github.io/langgraph/)
-- [Groq API Documentation](https://console.groq.com)
-- [LangChain Documentation](https://python.langchain.com/)
+**Groq rejects a model name or request**
 
-## License
+Check that the model ID in the notebook is currently supported by Groq and that your account has access to it. The model names in educational examples may need updating over time.
 
-MIT License - Feel free to use and modify for educational purposes.
+## References
 
----
-
-**Created:** August 2, 2026  
-**Last Updated:** August 2, 2026
-
+- [LangGraph documentation](https://docs.langchain.com/oss/python/langgraph/overview)
+- [LangChain documentation](https://python.langchain.com/docs/introduction/)
+- [Groq API documentation](https://console.groq.com/docs)
