@@ -10,6 +10,7 @@ A collection of Jupyter notebooks that introduce LangGraph through small, runnab
 | `1_bmi_workflow.ipynb` | Calculates BMI and assigns a weight category through sequential graph nodes. |
 | `2_simple_llm_workflow.ipynb` | Sends a question to a Groq chat model from a LangGraph workflow. |
 | `basic_chatbot.ipynb` | Runs a terminal-style chat loop with message state and in-memory conversation checkpoints. |
+| `simulating_a_workflowcrash_and_identifying_it_using_persistence.ipynb` | Simulates an interrupted workflow, inspects and resumes from checkpoints, and demonstrates updating state to create a new checkpoint. |
 | `batsman_workflow.ipynb` | Calculates cricket batting statistics in parallel and combines them into a summary. |
 | `Quadratic_Equation.ipynb` | Builds an equation, calculates its discriminant, and routes to the appropriate root calculation. |
 | `prompt_chaining.ipynb` | Generates a blog outline and then uses it to write a post. |
@@ -97,6 +98,7 @@ python -m pip install langgraph langchain-core langchain-groq python-dotenv pyda
 - The examples in `0_test_installation.ipynb`, `1_bmi_workflow.ipynb`, `batsman_workflow.ipynb`, and `Quadratic_Equation.ipynb` do not call an LLM and do not need a Groq key.
 - The LLM examples need a valid Groq API key, internet access, and model IDs that are available to your Groq account. Models are selected in the notebook cells; update those IDs if a provider retires or changes a model.
 - `basic_chatbot.ipynb` reads `.env` from the repository root and uses an in-memory checkpointer. Its conversation is not saved after the kernel stops. The interactive cell accepts `exit`, `quit`, or `bye` to end the loop.
+- `simulating_a_workflowcrash_and_identifying_it_using_persistence.ipynb` uses an `InMemorySaver` and thread ID `"1"` to demonstrate checkpointing. Interrupt the initial run during the 30-second pause in `step2`, inspect the thread's current state and history, then resume it by invoking the graph with `None` and the same thread ID. The final cells show how to retrieve a specific checkpoint and use `update_state` to create a new checkpoint with `input` changed to `"samosa"` while retaining the original checkpoint. Checkpoints are held in memory and are lost when the Python kernel stops; checkpoint IDs are generated at runtime, so use IDs from the current history output.
 - `8_X_Postgenerator.ipynb` uses structured output for tweet evaluation and loops through improvement attempts up to its configured iteration limit.
 - `UPSC_essay_workflow.ipynb` also reads `GROQ_MODEL` from the environment if set; otherwise it selects its default model.
 
